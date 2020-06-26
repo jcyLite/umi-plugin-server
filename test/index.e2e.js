@@ -1,0 +1,5 @@
+"use strict";
+const { join } = require('path');
+require('test-umi-plugin')({
+    fixtures: join(__dirname, 'fixtures'),
+});
