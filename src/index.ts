@@ -66,10 +66,9 @@ export default function (api: IApi) {
   ])
   api.onStart(()=>{
     if(api.env=='development'){
-      
-      
       if(api.config.server){
         api.babelRegister.setOnlyMap({
+          
           key: 'server',
           value: [path.resolve(api.cwd)]
         });
