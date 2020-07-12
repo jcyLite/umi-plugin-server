@@ -1,3 +1,6 @@
 {
-  "dependencies": {}
+  "start": "umi server run",
+  "dependencies": {
+    "umi": "^3.1.0"
+  }
 }

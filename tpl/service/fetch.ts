@@ -1,4 +1,4 @@
-import request from '@/service';
+import request from './index';
 import { isEmpty, forEach } from 'lodash';
 /**
  * 是否是字符串
@@ -170,26 +170,3 @@ export function deleteF<T = any>(
     params,
   });
 }
-
-// let handler = {
-//   apply(target, ctx, args) {
-//     let newArgs = {}
-//     if (args.length !== 1) {
-//       // args.for
-//       newArgs
-//     }
-//     args
-//     return Reflect.apply(target, ctx, args)
-//   }
-// }
-
-// for (const key in api) {
-//   if (api.hasOwnProperty(key)) {
-//     const proxyApi = new Proxy(api[key], {
-//       get: function(target, propKey) {
-//         return new Proxy(target[propKey], handler)
-//       }
-//     })
-//     api[key] = proxyApi
-//   }
-// }

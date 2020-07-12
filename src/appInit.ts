@@ -15,7 +15,7 @@ export default function () {
             let ids: any = [];
             let a = true;
             let uid = info.req.url.split('?')[1].split('=')[1];
-            wss.clients?.forEach((item: any, index: any) => {
+            wss.clients&&wss.clients.forEach((item: any, index: any) => {
                 if (ids.indexOf(item.uid) != -1) {
                     delete wss.clients[ids.indexOf(item.uid)];
                 } else {
@@ -42,27 +42,43 @@ export default function () {
             let keys: any = [];
             let urls: any = [];
             let methods: any = [];
+            let urlsMtds:any = [];
             let funcs: any = [];
             for (var key in app.mtd) {
                 let i = key.split(' ')
                 urls.push(i[1] || i[0])
                 if (i.length == 2) {
                     methods.push(i[0])
+                    urls.push(i[1])
+                    urlsMtds.push(i[0].toLowerCase()+' '+i[1])
                 } else if (i.length == 1) {
                     methods.push('all')
+                    urls.push(i[0])
+                    urlsMtds.push(i[0])
                 }
                 keys.push(key)
                 funcs.push(app.mtd[key])
             }
             let url = req.url.split('?')[0];
-            let index = urls.indexOf(url);
-            if (methods[index] == 'all' || (methods[index] ?.toLowerCase() == req.method.toLowerCase())) {
+            let index = urlsMtds.lastIndexOf(req.method.toLowerCase()+' '+url);
+            if(index==-1){ //如果没找到试试 是不是methods是all
+                index = urlsMtds.lastIndexOf(url);
+            }   
+            if (methods[index] == 'all' || (methods[index] &&methods[index].toLowerCase() == req.method.toLowerCase())) {
                 funcs[index] && funcs[index](req, res);
             } else {
-                res.json({
-                    code: 100,
-                    message: `请求类型只接受${methods[index]}`
-                })
+                if(methods[index]){
+                    res.json({
+                        code: 100,
+                        message: `请求类型只接受${methods[index]}`
+                    })
+                }else{
+                    res.json({
+                        code: 404,
+                        message: `无此方法`
+                    })
+                }
+                
             }
         },
     );
