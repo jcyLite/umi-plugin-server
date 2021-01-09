@@ -1,7 +1,12 @@
-const http = require('http');
-const express = require('express');
-const bodyParser = require("body-parser");
-const app = express()
+import http from 'http'
+import express,{Response,Request} from 'express';
+import bodyParser from "body-parser";
+type ExpressExtend= ReturnType<typeof express> & {
+    mtd:{
+        [k:string]:(res:Response,req:Request)=>void
+    }
+}
+const app= express() as ExpressExtend;
 const WebSocketServer = require('ws').Server;
 
 export default function () {
