@@ -1,6 +1,6 @@
 // ref:
 // - https://umijs.org/plugins/api
-import { IApi } from '@umijs/types';
+import { IApi } from '@umijs/types' ;
 import chokidar from 'chokidar';
 import path from 'path'
 import signale from 'signale';
