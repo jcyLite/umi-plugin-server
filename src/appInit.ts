@@ -1,37 +1,35 @@
 import http from 'http'
-import express,{Response,Request} from 'express';
+import express,{Response,Request,NextFunction} from 'express';
 import bodyParser from "body-parser";
+import ws from 'ws'
+type Extended<T,B> = T&B
 type ExpressExtend= ReturnType<typeof express> & {
     mtd:{
-        [k:string]:(res:Response,req:Request)=>void
+        [k:string]:(req:Request,res:Response)=>void
     }
 }
 const app= express() as ExpressExtend;
-const WebSocketServer = require('ws').Server;
+
 
 export default function () {
     const server = http.createServer(app);
-    const wss = new WebSocketServer({
+    const wss = new ws.Server({
         server,
         clientTracking: true,
-        verifyClient(info: any) {
-            //解析uid
-        
-            let ids: any = [];
-            let a = true;
-            let uid = info.req.url.split('?')[1].split('=')[1];
-            wss.clients&&wss.clients.forEach((item: any, index: any) => {
-                if (ids.indexOf(item.uid) != -1) {
-                    delete wss.clients[ids.indexOf(item.uid)];
+        verifyClient(info,callback) {
+            let ids:string[] = [];
+            wss.clients&&wss.clients.forEach((item, index) => {
+                if (ids.indexOf((item as any).uid) != -1) {
+                    delete wss.clients[ids.indexOf((item as any).uid)];
                 } else {
-                    ids.push(item.uid)
+                    ids.push((item as any).uid)
                 }
             })
             return true; //否则拒绝
         }
     });
     app.mtd = {}
-    app.use(function (req: any, res: any, next: any) {
+    app.use(function (req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "X-Requested-With");
         res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
@@ -43,12 +41,12 @@ export default function () {
     app.use(bodyParser.urlencoded({ extended: true  }))
     app.all(
         '*',
-        function (req: any, res: any, next: any) {
-            let keys: any = [];
-            let urls: any = [];
-            let methods: any = [];
-            let urlsMtds:any = [];
-            let funcs: any = [];
+        function (req, res, next) {
+            let keys = [];
+            let urls = [];
+            let methods = [];
+            let urlsMtds = [];
+            let funcs = [];
             for (var key in app.mtd) {
                 let i = key.split(' ')
                 urls.push(i[1] || i[0])

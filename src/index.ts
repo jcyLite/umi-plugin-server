@@ -8,7 +8,7 @@ import prod from './prod'
 import socketConnect from './socketConnect';
 import createApp from './appInit'
 import jcyFs from 'jcy-fs'
-const chalk = require('chalk')
+import chalk from 'chalk'
 const { synchronizeSwagger } = require('./synchronizeSwagger.js')
 const { exec } = require('child_process');
 var inquirer = require("inquirer");
